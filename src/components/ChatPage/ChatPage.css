@@ -1,0 +1,60 @@
+.chat-container {
+    height: calc(100dvh - 5rem);
+
+    display: flex;
+    flex-direction: row;
+    /* position: relative; */
+
+    transition: background-color 0.5s;
+}
+
+.back-div {
+    /* isolation: isolate; */
+    position: absolute;
+    z-index: -1;
+
+    width: 100%;
+    height: calc(100dvh - 5rem);
+
+    background-color: rgba(0, 0, 0, 0.4);
+    transition: background-color 0.5s;
+}
+
+.btn-settings {
+    position: fixed;
+    right: 0;
+    z-index: 1;
+
+    display: flex;
+    height: fit-content;
+
+    color: #a4a0ba;
+    background-color: #393744;
+    border: none;
+
+    border-top-left-radius: 50%;
+    border-bottom-left-radius: 50%;
+
+    border-left: 2px solid #393744;
+    border-right: none;
+
+    /* margin-block: 0.15rem; */
+    padding: 0.65rem;
+
+    transition: margin-right 0.5s;
+
+}
+
+@keyframes rotating {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(90deg);
+    }
+}
+
+.btn-settings svg:hover {
+    animation: rotating 0.75s reverse;
+}

@@ -1,0 +1,146 @@
+.chat-content-container {
+    width: calc(100% - 256px);
+    /* height: calc(100dvh - 5rem); */
+
+    background-color: #f0f0f0;
+    color: rgb(130, 88, 206);
+
+    /* overflow: hidden; */
+}
+
+.scrollable-container {
+    height: calc(100dvh - 5rem);
+    scroll-behavior: smooth;
+
+    overflow-y: scroll;
+    scrollbar-width: none;
+}
+
+.scrollable-container::-webkit-scrollbar {
+    display: none;
+}
+
+.align-chat-content {
+    align-items: baseline !important;
+}
+
+.chat-content {
+    gap: 0.45rem;
+    margin-inline: 0.75rem;
+
+    display: flex;
+    align-items: center;
+}
+
+.chat-content:first-child {
+    margin-top: 3rem;
+}
+
+.reciever {
+    flex-direction: row;
+}
+
+.sender {
+    flex-direction: row-reverse;
+}
+
+.message {
+    background-color: rgb(71, 22, 163);
+    color: #f0f0f0;
+
+    padding-inline: 1rem;
+    padding-block: 0.75rem;
+
+    border-radius: 30px;
+    max-width: 25rem;
+}
+
+.input-message-container {
+    position: sticky;
+    box-sizing: border-box;
+    bottom: 0;
+
+    background-color: rgba(114, 84, 169, 0.555);
+    min-height: 4.25rem;
+
+    padding-inline: 1rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 0.75rem;
+    box-shadow: 0 -1px 3px rgba(114, 84, 169);
+}
+
+.btn-camera,
+.btn-emoji {
+    border-radius: 100vmax;
+    transform: scale(0.8);
+
+    height: 44px;
+    width: 44px;
+    color: #f0f0f0;
+    background-color: rgb(130, 88, 206);
+
+    cursor: pointer;
+}
+
+.btn-camera input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    /* text-align: right; */
+    /* filter: alpha(opacity=0); */
+    /* opacity: 0; */
+    opacity: 0;
+    cursor: inherit;
+    width: 100%;
+    height: 100%;
+    /* display: block; */
+}
+
+.btn-emoji,
+.btn-send {
+    box-shadow: 0 0 3px rgba(114, 84, 169);
+}
+
+.message-box {
+    border: none;
+    border-radius: 24px;
+    box-shadow: 0 -1px 2px rgba(114, 84, 169);
+
+    height: 48px;
+    width: 80%;
+
+    color: #0f0f0f;
+    background-color: #f0f0f0;
+
+    resize: none;
+    font-size: 18px;
+
+    padding-inline: 18px;
+}
+
+.message-box:active,
+.message-box:focus-visible {
+    outline: none;
+}
+
+.btn-send {
+    padding-inline: 1rem;
+    padding-block: 0.5rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 0.5rem;
+    font-size: 1rem;
+
+    border: none;
+    border-radius: 100vmax;
+
+    color: rgb(130, 88, 206);
+    background-color: #f0f0f0;
+}

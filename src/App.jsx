@@ -2,8 +2,6 @@
 // import viteLogo from '/vite.svg'
 import { useState } from 'react'
 
-// import { signInWithGoogle } from './firebase'
-
 import { ChatPage } from './components/ChatPage/ChatPage'
 import { LoginPage } from './components/LoginPage/LoginPage'
 import { Navbar } from './components/Navbar/Navbar'

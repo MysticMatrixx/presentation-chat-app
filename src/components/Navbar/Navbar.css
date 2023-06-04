@@ -1,0 +1,67 @@
+.nav-bar {
+    position: sticky;
+    top: 0;
+
+    height: 5rem;
+
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-inline: 3rem;
+
+    background-color: rgb(90, 27, 205);
+    color: #f0f0f0;
+    cursor: default;
+    box-shadow: 0 0 3px #000;
+}
+
+.nav-btn-container {
+    display: flex;
+    gap: 1rem;
+}
+
+.nav-btn-container button {
+    font-size: 1rem;
+    padding-inline: 3rem;
+    padding-block: 0.75rem;
+    width: 100%;
+
+    border: none;
+    border-radius: 10px;
+    color: inherit;
+
+    transition: background-color 300ms;
+}
+
+.btn-chat {
+    background-color: rgb(223, 100, 33);
+}
+
+.btn-chat:hover {
+    background-color: rgb(178, 80, 27);
+}
+
+.btn-login {
+    background-color: rgb(33, 141, 223);
+}
+
+.btn-login:hover {
+    background-color: rgb(30, 119, 187);
+}
+
+.btn-logout {
+    padding-inline: 1.25rem !important;
+    padding-block: 0 !important;
+    margin: 0 !important;
+    background-color: #222222;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    justify-items: center;
+}
+
+.btn-logout:hover {
+    background-color: #0f0f0f;
+}
