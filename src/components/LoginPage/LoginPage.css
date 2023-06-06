@@ -60,3 +60,13 @@
     color: rgb(90, 27, 205);
     background-color: #f0f0f0;
 }
+
+.error {
+    background-color: #fdcbcf6f;
+    padding-inline: 1.25rem;
+    padding-block: 0.75rem;
+    border: none;
+    border-radius: 10px;
+    color: #9f0010;
+    font-size: 1.25rem;
+}
