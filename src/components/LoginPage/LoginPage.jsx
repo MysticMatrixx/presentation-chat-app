@@ -1,12 +1,14 @@
 import { useState } from 'react'
 
 import { useAuth } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import './LoginPage.css'
 
 export function LoginPage() {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('');
 
+    const navigate = useNavigate()
     const { signInWithGoogle } = useAuth();
 
     async function logIn() {
@@ -14,6 +16,7 @@ export function LoginPage() {
             setError('')
             setLoading(true)
             await signInWithGoogle()
+            navigate('/')
         } catch (err) {
             if (err.code == "auth/popup-closed-by-user")
                 setError("Please select a Google account to Login")
@@ -34,7 +37,6 @@ export function LoginPage() {
 
                         <button onClick={logIn} disabled={loading}>Google</button>
                         {/* <button>Anonymous</button> */}
-
                     </fieldset>
                 </div>
             </div>

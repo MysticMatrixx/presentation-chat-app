@@ -61,6 +61,18 @@
     background-color: #f0f0f0;
 }
 
+.login-btns button:disabled,
+.login-btns button[disabled] {
+    cursor: not-allowed;
+    pointer-events: none;
+
+    opacity: 0.4;
+    color: rgb(90, 27, 205);
+    background-color: #f0f0f0;
+
+    transition: all 600ms;
+}
+
 .error {
     background-color: #fdcbcf6f;
     padding-inline: 1.25rem;

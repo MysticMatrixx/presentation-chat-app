@@ -43,17 +43,14 @@ export function AuthProvider({ children }) {
   // };
   // console.log(info);
 
-  async function logOut() {
-    try {
-      signOut(auth);
-    } catch (err) {
-      console.log(err);
-    }
+  function logOut() {
+    return signOut(auth);
   }
 
   const value = {
     currentUser,
     signInWithGoogle,
+    logOut,
   };
 
   return (

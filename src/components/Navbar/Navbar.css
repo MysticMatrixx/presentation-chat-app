@@ -16,16 +16,17 @@
     box-shadow: 0 0 3px #000;
 }
 
-.nav-btn-container {
+/* .nav-btn-container {
     display: flex;
     gap: 1rem;
-}
+} */
 
 .nav-btn-container button {
-    font-size: 1rem;
-    padding-inline: 3rem;
-    padding-block: 0.75rem;
-    width: 100%;
+    /* font-size: 1rem; */
+    /* padding-inline: 3rem; */
+    /* padding-block: 0.75rem; */
+    /* width: 100%; */
+    cursor: pointer;
 
     border: none;
     border-radius: 10px;
@@ -34,7 +35,7 @@
     transition: background-color 300ms;
 }
 
-.btn-chat {
+/* .btn-chat {
     background-color: rgb(223, 100, 33);
 }
 
@@ -48,12 +49,13 @@
 
 .btn-login:hover {
     background-color: rgb(30, 119, 187);
-}
+} */
 
 .btn-logout {
-    padding-inline: 1.25rem !important;
-    padding-block: 0 !important;
-    margin: 0 !important;
+    padding-left: 0.75rem;
+    padding-right: 1rem;
+    padding-block: 0.25rem;
+    margin: 0;
     background-color: #222222;
 
     display: flex;
