@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+
 import './LoginPage.css'
 
 export function LoginPage() {
@@ -9,13 +10,14 @@ export function LoginPage() {
     const [error, setError] = useState('');
 
     const navigate = useNavigate()
-    const { signInWithGoogle } = useAuth();
+    const { signInWithGoogle, createUserDoc } = useAuth();
 
     async function logIn() {
         try {
             setError('')
             setLoading(true)
-            await signInWithGoogle()
+            const logged = await signInWithGoogle()
+            createUserDoc(logged)
             navigate('/')
         } catch (err) {
             if (err.code == "auth/popup-closed-by-user")

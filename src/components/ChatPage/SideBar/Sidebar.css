@@ -85,7 +85,7 @@
     padding-inline: 0;
 
     list-style: none;
-    overflow-y: scroll;
+    overflow-y: auto;
 
     display: flex;
     flex-direction: column;
@@ -102,10 +102,10 @@
     transition: background-color 250ms, color 450ms ease-in;
 }
 
-.group-list a {
+/* .group-list a {
     color: #0f0f0f;
     text-decoration: none;
-}
+} */
 
 .group-list li:hover,
 .active {
@@ -153,4 +153,49 @@
 .group-title button,
 .group-list li {
     cursor: pointer;
+}
+
+.dialog-container {
+    border: none;
+    border-radius: 10px;
+
+    background-color: rgb(130, 88, 206);
+    color: #f0f0f0;
+
+    height: fit-content;
+    min-height: 20vh;
+    min-width: fit-content;
+    width: 15vw;
+}
+
+.dialog-form input {
+    border: none;
+    height: 1rem;
+
+    padding-inline: 1.75rem;
+    padding-block: 0.75rem;
+    /* background-color: #000; */
+}
+
+.dialog-form {
+    display: flex;
+    gap: 0.5rem;
+    flex-direction: column;
+}
+
+.dialog-form input {
+    border-radius: 5px;
+}
+
+.form-btn-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 0.5rem;
+}
+
+.form-btn-container button {
+    background-color: rgb(90, 27, 205);
+    padding-block: 0.45rem;
+    padding-inline: 1.5rem;
 }

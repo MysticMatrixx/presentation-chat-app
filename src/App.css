@@ -5,3 +5,18 @@ body {
 #PageView {
   box-sizing: border-box;
 }
+
+/* width */
+::-webkit-scrollbar {
+  width: 2px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #b3b3b3;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgb(90, 27, 205);
+}

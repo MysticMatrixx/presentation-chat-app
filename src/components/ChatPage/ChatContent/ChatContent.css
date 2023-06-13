@@ -1,6 +1,6 @@
 .chat-content-container {
     width: calc(100% - 256px);
-    /* height: calc(100dvh - 5rem); */
+    height: calc(100dvh - 5rem);
 
     background-color: #f0f0f0;
     color: rgb(130, 88, 206);
@@ -9,10 +9,10 @@
 }
 
 .scrollable-container {
-    height: calc(100dvh - 5rem);
+    height: calc(100dvh - 4.25rem - 5rem);
     scroll-behavior: smooth;
 
-    overflow-y: scroll;
+    overflow-y: auto;
     scrollbar-width: none;
 }
 

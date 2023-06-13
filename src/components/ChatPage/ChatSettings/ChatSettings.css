@@ -13,6 +13,7 @@
     cursor: default;
 
     transition: 0.5s;
+    white-space: nowrap;
 }
 
 .settings-title {
@@ -55,7 +56,7 @@
     padding: 0;
 
     list-style: none;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .people-list li {

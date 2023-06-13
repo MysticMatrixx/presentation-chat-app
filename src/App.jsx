@@ -1,15 +1,15 @@
-import { useEffect, useState } from 'react'
 import { AuthProvider } from './context/AuthContext'
+import { ChatProvider } from './context/ChatContext'
+
 import { Routes, Route } from 'react-router-dom'
-
-
 import PrivateRoute from './components/PrivateRoute'
+
 import { ChatPage } from './components/ChatPage/ChatPage'
 import { LoginPage } from './components/LoginPage/LoginPage'
 import { Navbar } from './components/Navbar/Navbar'
 import { NotFound } from './components/NotFound/NotFound'
-
 import './App.css'
+
 function App() {
   // const [pageNow, setPageNow] = useState("")
 
@@ -20,7 +20,9 @@ function App() {
         <Routes>
           <Route path='/' element={
             <PrivateRoute>
-              <ChatPage />
+              <ChatProvider>
+                <ChatPage />
+              </ChatProvider>
             </PrivateRoute>
           } />
           {/* <PrivateRoute path='/' component={ChatPage} /> */}
@@ -28,7 +30,7 @@ function App() {
           <Route path='*' element={<NotFound />} />
         </Routes>
       </div>
-    </AuthProvider>
+    </AuthProvider >
   )
 }
 

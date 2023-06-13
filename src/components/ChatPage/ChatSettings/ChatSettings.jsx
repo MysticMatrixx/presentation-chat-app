@@ -1,6 +1,6 @@
 import './ChatSettings.css'
 
-export default function ChatSettings() {
+export default function ChatSettings({ groupId }) {
     return (
         <>
             <div id='side-nav' className='chat-settings-container'>
