@@ -19,20 +19,23 @@ export function useAuth() {
 
 export function AuthProvider({ children }) {
   let userData;
-  const [currentUser, setCurrentUser] = useState();
+  const [currentUser, setCurrentUser] = useState(() => []);
   const [loading, setLoading] = useState(true)
+  const [userNameArr, setUserNameArr] = useState('');
 
+  // Realtime Tracking & Persisting Authentication state of the user
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setCurrentUser(user); //user.uid not .id :')
-      console.log("USER EFFECTED")
-      setLoading(false)
+      setCurrentUser(() => user);   //user.uid not .id :')
+      setUserNameArr(user?.displayName?.split(' '))
+      // console.log(user)
+      setLoading(() => false)
     });
 
-    return unsubscribe;
+    return () => unsubscribe();
   }, []);
 
-
+  // create user required info.s document in user collection
   async function createUserDoc(result) {
     const userCollectionRef = doc(db, `user`, result.user.uid)
     userData = await getDoc(userCollectionRef);
@@ -49,35 +52,29 @@ export function AuthProvider({ children }) {
     )
   }
 
-  // authentication user
+  // Authentication of user
   function signInWithGoogle() {
     return signInWithPopup(auth, providerGoogle)
   }
 
-  // const credential = GoogleAuthProvider.credentialFromResult(result);
-
-  // const info = {
-  //     access_token: credential?.accessToken || null,
-  //     uid: result.user.uid,
-  //     first_name: result._tokenResponse.firstName,
-  //     last_name: result._tokenResponse.lastName,
-  //     email: result.user.email,
-  //     photo: result.user.photoURL,
-  // };
-  // console.log(info);
-
+  // log out current user
   function logOut() {
     return signOut(auth);
   }
 
   const value = {
-    currentUser,
+    currentUser, userNameArr,
     createUserDoc, signInWithGoogle, logOut,
   };
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {
+        !loading ?
+          children
+          :
+          <h1 style={{ textAlign: 'center' }}>Loading...</h1>
+      }
     </AuthContext.Provider>
   );
 }

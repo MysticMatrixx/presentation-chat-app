@@ -1,0 +1,18 @@
+.list-people {
+    font-family: system-ui, 'Segoe UI', Roboto, 'Open Sans', sans-serif;
+
+    width: 100%;
+
+    padding-block: 0.25rem;
+    padding-inline: 0.5rem;
+    border-bottom: #a4a0ba solid 2px;
+    margin: 0;
+
+    font-size: 1rem;
+}
+
+.css-1nmdiq5-menu {
+    /* box-sizing: border-box; */
+    width: 95% !important;
+    outline-width: 0.5rem;
+}

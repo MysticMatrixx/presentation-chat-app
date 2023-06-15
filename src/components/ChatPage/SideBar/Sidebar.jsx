@@ -1,26 +1,21 @@
 import { useAuth } from '../../../context/AuthContext'
 import { useChat } from '../../../context/ChatContext'
 
-import { useEffect, useState } from 'react'
-import { onSnapshot, orderBy, query, where } from 'firebase/firestore'
+import { useState, useEffect } from 'react'
 
 import './Sidebar.css'
 
 function Sidebar({ groupId, setGroupId }) {
-    const { currentUser } = useAuth()
-    const { createGroup, messageGroupColRef, updateCreatedGroupInUser } = useChat();
+    const { currentUser, userNameArr } = useAuth()
+    const { currentUserGroups, createGroup, updateJoinedGroupInUser } = useChat();
 
-    const nameArr = currentUser.displayName.split(' ');
-    const username = nameArr[0] + " " + nameArr[1]; // (currentUserInfo.first_name + " " + currentUserInfo.last_name);
-    const [group, setGroup] = useState([]);
+    const username = userNameArr[0] + " " + userNameArr[1];
     const [formError, setFormError] = useState('');
 
-    const dataModal = document.querySelector('[data-modal]')
-    const openBtn = document.querySelector('[data-open-modal]')
-    const closeBtn = document.querySelector('[data-close-modal]')
 
     // NEW FEATURE FRIENDS
     // const friends = ['Dhan Raj', 'Tushit'];
+
 
     function handleAactiveGroup(e) {
         if (e.target.id == groupId) return;
@@ -30,8 +25,6 @@ function Sidebar({ groupId, setGroupId }) {
     async function handleSubmit(e) {
         e.preventDefault();
         const groupName = e.target.elements.group_name;
-        // const formAdd = document.querySelector('.dialog-form');
-        // const dataModal = document.querySelector('[data-modal]')
 
         try {
             if (groupName.value == '') return setFormError("Required a valid group name");
@@ -39,8 +32,7 @@ function Sidebar({ groupId, setGroupId }) {
 
             const groupRef = await createGroup(groupName.value);
             setFormError('')
-            dataModal.close()
-            await updateCreatedGroupInUser(groupRef.id);
+            await updateJoinedGroupInUser(groupRef.id);
         } catch (err) {
             console.log(err)
         } finally {
@@ -48,46 +40,40 @@ function Sidebar({ groupId, setGroupId }) {
         }
     }
 
-    // useEffect(() => {
-    closeBtn?.addEventListener('click', () => {
-        setFormError('')
-        dataModal.close()
-    })
+    useEffect(() => {
+        const dataModal = document.querySelector('[data-modal]')
+        const openBtn = document.querySelector('[data-open-modal]')
+        const closeBtn = document.querySelector('[data-close-modal]')
 
-    openBtn?.addEventListener('click', () => {
-        dataModal.close()
-        dataModal.showModal()
-    })
-
-    dataModal?.addEventListener('click', (e) => {
-        const dialogDimensions = dataModal.getBoundingClientRect()
-        if (
-            e.clientX < dialogDimensions.left || e.clientX > dialogDimensions.right ||
-            e.clientY < dialogDimensions.top || e.clientY > dialogDimensions.bottom
-        ) {
+        const forClose = () => {
             setFormError('')
             dataModal.close()
         }
-    })
-    // }, [])
+        closeBtn?.addEventListener('click', forClose)
 
-    useEffect(() => {
-        const q = query(messageGroupColRef,
-            where('participants', 'array-contains', currentUser.uid),
-            orderBy('created_at', 'desc'))
+        const forOpen = () => {
+            dataModal.close()
+            dataModal.showModal()
+        }
+        openBtn?.addEventListener('click', forOpen)
 
-        const unsub = onSnapshot(q, (docSnap) => {
-            let groups = []
+        const forModal = (e) => {
+            const dialogDimensions = dataModal.getBoundingClientRect()
+            if (
+                e.clientX < dialogDimensions.left || e.clientX > dialogDimensions.right ||
+                e.clientY < dialogDimensions.top || e.clientY > dialogDimensions.bottom
+            ) {
+                setFormError('')
+                dataModal.close()
+            }
+        }
+        dataModal?.addEventListener('click', forModal)
 
-            docSnap.docs.forEach((doc) => {
-                groups.push({ ...doc.data(), id: doc.id })
-            })
-            setGroupId(groups[0]?.id);
-            setGroup(groups);
-            // console.log(groups)
-            // console.log(groups[0].id + " mounted")
-        })
-        return () => unsub();
+        return () => {
+            closeBtn?.removeEventListener('click', forClose)
+            openBtn?.removeEventListener('click', forOpen)
+            dataModal?.removeEventListener('click', forModal)
+        }
     }, [])
 
     return (
@@ -96,9 +82,11 @@ function Sidebar({ groupId, setGroupId }) {
 
             {/* <Group groupType={'Group'} groupItems={groupNames} /> */}
             {/* <Group groupType={'Friends'} groupItems={friends} marginTop={'-0.5'} /> */}
-            {group && <div className="group-container">
+
+            <div className="group-container">
                 <span className='group-title'>
                     <h2>Groups</h2>
+
                     <button className='btn-add-group-item' data-open-modal>
                         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" className="bi bi-plus-circle" viewBox="0 0 16 16">
                             <path className='path-1' d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
@@ -108,7 +96,10 @@ function Sidebar({ groupId, setGroupId }) {
 
                     <dialog className='dialog-container' data-modal>
                         <h3>Add new Group</h3>
-                        {formError && <p style={{ color: 'red' }}>{formError}</p>}
+                        {
+                            formError &&
+                            <p style={{ color: 'red' }}>{formError}</p>
+                        }
                         <form className='dialog-form' onSubmit={handleSubmit}>
                             <input type="text" name='group_name' placeholder={`Type new Group name...`} />
                             <span className='form-btn-container'>
@@ -118,26 +109,29 @@ function Sidebar({ groupId, setGroupId }) {
                         </form>
                     </dialog>
                 </span>
-
                 <ul className='group-list'>
-                    {group.map((item) => {
-                        return (
-                            <li className={item.id === groupId ? 'active' : ''} onClick={handleAactiveGroup} id={item.id} key={item.id}>{item.group_name}</li>
-                        )
-                    })}
+                    {
+                        currentUserGroups.map((item) => {
+                            return (
+                                <li className={item.id === groupId ? 'active' : ''} onClick={handleAactiveGroup} id={item.id} key={item.id}>{item.group_name}</li>
+                            )
+                        })
+                    }
                 </ul>
-            </div>}
+            </div>
 
             <div className='profile-container'>
                 <a href='#' className='profile-person'>
                     {
                         currentUser ?
-                            <img src={currentUser.photoURL} style={{ borderRadius: '50%', backgroundColor: 'rgb(71, 22, 163)' }} height={'30px'} width={'30px'} alt="🎈" /> :
+                            <img src={currentUser.photoURL} style={{ borderRadius: '50%', backgroundColor: 'rgb(71, 22, 163)' }} height={'30px'} width={'30px'} alt="🎈" />
+                            :
                             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" className="bi bi-person-circle" viewBox="0 0 16 16">
                                 <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
                                 <path fillRule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z" />
                             </svg>
                     }
+
                     {username}
                 </a>
                 <a href='#' className='profile-settings'>

@@ -12,7 +12,9 @@
     height: calc(100dvh - 4.25rem - 5rem);
     scroll-behavior: smooth;
 
+    overflow-wrap: anywhere;
     overflow-y: auto;
+    overflow-x: hidden;
     scrollbar-width: none;
 }
 
@@ -47,12 +49,17 @@
 .message {
     background-color: rgb(71, 22, 163);
     color: #f0f0f0;
+    font-size: large;
 
     padding-inline: 1rem;
     padding-block: 0.75rem;
 
     border-radius: 30px;
     max-width: 25rem;
+
+    overflow-wrap: anywhere;
+    white-space: break-spaces;
+    word-wrap: anywhere;
 }
 
 .input-message-container {

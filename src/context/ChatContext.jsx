@@ -1,6 +1,9 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
-import { addDoc, arrayUnion, collection, doc, onSnapshot, query, serverTimestamp, updateDoc, where } from "firebase/firestore";
+import {
+    orderBy, addDoc, arrayUnion, collection, doc,
+    onSnapshot, query, serverTimestamp, updateDoc, where
+} from "firebase/firestore";
 
 import { db } from "../firebase";
 import { useAuth } from "./AuthContext";
@@ -14,42 +17,46 @@ export function useChat() {
 export function ChatProvider({ children }) {
     const { currentUser } = useAuth();
 
-    // const [currentUserInfo, setCurrentUserInfo] = useState();
-    const [loading, setLoading] = useState(false)
-
     const userColRef = collection(db, 'user')
     const messageGroupColRef = collection(db, 'group')
 
-    // useEffect(() => {
-    //     // const q = query(userColRef, where(userColRef.id, '==', currentUser.id))
-    //     const docRef = doc(userColRef, currentUser.uid);
-    //     onSnapshot(docRef, (docSnap) => {
-    //         setCurrentUserInfo({ ...docSnap.data(), id: docSnap.id })
-    //         setLoading(false)
-    //     })
-    // }, [])
+    const [loading, setLoading] = useState(true)
+    const [allUsers, setAllUsers] = useState([]);
+    const [currentUserGroups, setCurrentUserGroups] = useState([]);
 
-    // useEffect(() => {
-    //     let users = [];
-    //     // let ids = [];
+    // Current user's all groups (joined & created both).
+    useEffect(() => {
+        const q = query(messageGroupColRef,
+            where('participants', 'array-contains', currentUser.uid),
+            orderBy('created_at', 'desc'))
 
-    //     const unsubscribeUserList = onSnapshot(userColRef, (snap) => {
-    //         snap.docs?.forEach(docUser => {
-    //             let data = { ...docUser.data(), id: docUser.id };
-    //             if (currentUser.uid == docUser.id) {
-    //                 setCurrentUserInfo(data)
-    //                 getGroupDoc(currentUser.uid)
-    //             }
-    //             users.push(data)
-    //         })
+        const unsub = onSnapshot(q, (docSnap) => {
+            let groups = []
 
-    //         setUsersInfo(users);
-    //         setLoading(false);
-    //     });
+            docSnap.docs.forEach((doc) => {
+                groups.push({ ...doc.data(), id: doc.id })
+            })
 
-    //     return unsubscribeUserList;
-    // }, [])
+            setCurrentUserGroups(() => groups);
+            setLoading(false);
+        })
+        return () => unsub();
+    }, [])
 
+    // All users with the required informations
+    useEffect(() => {
+        const unsub = onSnapshot(userColRef, (docSnap) => {
+            let users = []
+
+            docSnap.docs.forEach((doc) => {
+                users.push({ ...doc.data(), id: doc.id })
+            })
+            setAllUsers(() => users);
+        })
+        return () => unsub();
+    }, [])
+
+    // create a group by the current user
     function createGroup(group_name) {
         const data = {
             created_at: serverTimestamp(),
@@ -61,13 +68,14 @@ export function ChatProvider({ children }) {
         return addDoc(messageGroupColRef, data);
     }
 
-    function updateCreatedGroupInUser(group_id) {
-        const currentUserRef = doc(db, 'user', currentUser.uid)
-        return updateDoc(currentUserRef, {
+    // update joined_group array in user
+    function updateJoinedGroupInUser(group_id) {
+        return updateDoc(doc(userColRef, currentUser.uid), {
             joined_groups: arrayUnion(group_id),
         })
     }
 
+    // send message with current user
     function createUserMessage(docRef, content) {
         const data = {
             created_at: serverTimestamp(),
@@ -78,38 +86,28 @@ export function ChatProvider({ children }) {
         return addDoc(docRef, data);
     }
 
-    // function getGroupDoc(doc_id) {
-    //     const q = query(messageGroupColRef,
-    //         // where("creater_id", "==", doc_id),
-    //         where("participants", "array-contains", doc_id))
-    //     getDocs(q).then((snap) => snap.docs.forEach((item) => console.log(item.data())))
-    // }
-
-    // function getGroupNames() {
-    //     let names = [];
-    //     let ids = [...currentUserInfo.joined_groups, ...currentUserInfo.created_groups]
-
-    //     ids.forEach(async (id) => {
-    //         const snap = await getDoc(doc(messageGroupColRef, id));
-    //         let data = snap.data();
-    //         names.push({ name: data.group_name, id: snap.id })
-    //     })
-    // console.log(names)
-    //     return names;
-    // }
-
-    // console.log(currentUserInfo)
-    // console.log(userInfo)
-    // console.log(messageColInfo)
+    // add the user_id to group's participant field
+    function addUserToGroup(groupId, userId) {
+        const groupRef = doc(messageGroupColRef, groupId);
+        updateDoc(groupRef, {
+            participants: arrayUnion(userId),
+        })
+    }
 
     const value = {
-        messageGroupColRef,
-        createGroup, createUserMessage, updateCreatedGroupInUser,
+        messageGroupColRef, userColRef, currentUserGroups, allUsers,
+        createGroup, createUserMessage, updateJoinedGroupInUser,
+        addUserToGroup,
     };
 
     return (
         <ChatContext.Provider value={value}>
-            {!loading && children}
+            {
+                !loading ?
+                    children
+                    :
+                    <h1 style={{ textAlign: 'center' }}>Loading...</h1>
+            }
         </ChatContext.Provider>
     );
 }

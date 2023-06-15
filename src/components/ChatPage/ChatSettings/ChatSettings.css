@@ -63,13 +63,23 @@
     display: flex;
     align-items: center;
 
-    gap: 0.25rem;
     padding-inline: 0.75rem;
     height: 2.5rem;
+}
 
+.admin {
+    justify-content: space-between;
+}
+
+.not-admin {
     justify-content: end;
+}
 
-    border-bottom: #a4a0ba solid 2px;
+.li-item {
+    display: flex;
+    align-items: center;
+
+    gap: 0.35rem;
 }
 
 .people-list li:hover {
@@ -77,24 +87,12 @@
     color: #a4a0ba;
 }
 
-.people-find {
-    box-shadow: 0 -1px 3px #393744;
-    /* margin-block: 0.25rem; */
-    padding-inline: 0.5rem;
-
-    /* position: sticky;
+/* .people-find { */
+/* box-shadow: 0 -1px 3px #393744; */
+/* margin-block: 0.25rem; */
+/* position: sticky;
     bottom: 0; */
-}
-
-.people-find input {
-    height: 2.5rem;
-    width: 100%;
-
-    padding-inline: 0.5rem;
-    margin: 0;
-
-    font-size: 1rem;
-}
+/* } */
 
 .group-option-list {
     margin: 0;
