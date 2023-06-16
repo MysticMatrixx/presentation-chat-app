@@ -42,9 +42,19 @@
     flex-direction: row;
 }
 
+/* .reciever .user-info {
+    justify-content: end;
+} */
+
+
 .sender {
     flex-direction: row-reverse;
 }
+
+/* 
+.sender .user-info {
+    justify-content: start;
+} */
 
 .message {
     background-color: rgb(71, 22, 163);
@@ -89,7 +99,11 @@
     width: 44px;
     color: #f0f0f0;
     background-color: rgb(130, 88, 206);
+}
 
+.btn-camera,
+.btn-emoji,
+.btn-send {
     cursor: pointer;
 }
 
@@ -131,7 +145,7 @@
 
 .message-box:active,
 .message-box:focus-visible {
-    outline: none;
+    outline: 3px solid rgb(116, 80, 182);
 }
 
 .btn-send {
@@ -150,4 +164,30 @@
 
     color: rgb(130, 88, 206);
     background-color: #f0f0f0;
+}
+
+.btn-camera:hover,
+.btn-camera:focus-visible,
+.btn-camera:focus-within {
+    background-color: rgb(116, 80, 182);
+}
+
+.btn-send:hover,
+.btn-send:focus-visible {
+    outline: 3px solid rgb(116, 80, 182);
+    background-color: #fff;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+
+    justify-content: end;
+
+    font-size: 0.75rem;
+
+    margin-top: 0.5rem;
+    padding-inline: 0.15rem;
+
+    cursor: default;
 }

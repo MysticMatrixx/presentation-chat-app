@@ -29,8 +29,8 @@ function changeNav() {
 export function ChatPage() {
     const { currentUserGroups } = useChat()
 
-    const [groupId, setGroupId] = useState(currentUserGroups[0].id);
-    const owner = currentUserGroups.find(g => g.id === groupId)
+    const [groupId, setGroupId] = useState(currentUserGroups[0]?.id);
+    const owner = currentUserGroups?.find(g => g.id === groupId)
     const [groupInfo, setgroupInfo] = useState(owner);
 
     // useEffect(() => {
@@ -79,7 +79,11 @@ export function ChatPage() {
                         <ChatContent groupId={groupId} />
                         <ChatSettings groupId={groupId} groupInfo={groupInfo} />
                     </>
-                ) : <h1>Loading...</h1>
+                ) : <h1 style={{ textAlign: 'center', width: '100%' }}>
+                    Create Groups
+                    <br /> or
+                    <br /> Ask a Friend to add You..!
+                </h1>
             }
         </div>
     )

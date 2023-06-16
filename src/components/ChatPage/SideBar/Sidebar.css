@@ -56,6 +56,7 @@
 
     color: #f0f0f0;
     font-weight: 500;
+    cursor: default;
 }
 
 .group-title button {
@@ -77,6 +78,7 @@
 .group-title button svg:hover {
     color: rgb(130, 88, 206);
     background-color: #f0f0f0;
+
 }
 
 .group-list {

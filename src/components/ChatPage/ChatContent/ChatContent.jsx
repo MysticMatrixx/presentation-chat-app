@@ -8,7 +8,10 @@ import { useEffect, useState } from 'react';
 import './ChatContent.css';
 
 export default function ChatContent({ groupId }) {
+    const [currentFileToUpload, setCurrentFileToUpload] = useState(null);
     const [roomMessages, setRoomMessages] = useState([]);
+
+    const scrollItDown = document.getElementById('dummy')
 
     const { currentUser } = useAuth();
     const { createUserMessage } = useChat();
@@ -21,43 +24,56 @@ export default function ChatContent({ groupId }) {
             let message = []
 
             docSnap.docs.forEach((doc) => {
-                message.push({ ...doc.data(), id: doc.id })
+                message.push({ ...doc.data(), id: doc.id, created_at: doc.data().created_at.toDate().toLocaleTimeString('hi-IN', { hour: '2-digit', minute: '2-digit' }), })
             })
             // console.log(message);
             setRoomMessages(message);
             // console.log(message)
         })
-
         return () => unsub()
     }, [groupId])
 
+    useEffect(() => {
+        scrollItDown?.scrollIntoView({ behavior: 'smooth' })
+    }, [roomMessages])
+
     function setMessages(item) {
-        const isOwner = (item.sender_id == currentUser.uid);
+        const isCurrentUser = (item.sender_id == currentUser.uid);
+        // let firestoreTime = new Date(item && item?.created_at?.seconds);
 
         return (
-            <div className={`chat-content  ${isOwner ? 'sender' : 'reciever'}`} key={item.id}>
+            <div className={`chat-content  ${isCurrentUser ? 'sender' : 'reciever'}`} key={item.id}>
                 <span className='profile'>
                     {
-                        isOwner ?
-                            <img src={currentUser.photoURL} style={{ borderRadius: '50%', backgroundColor: 'transparent' }} height={'30px'} width={'30px'} alt="🎈" /> :
-                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" className="bi bi-person-circle" viewBox="0 0 16 16">
-                                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
-                                <path fillRule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z" />
-                            </svg>
+                        isCurrentUser ?
+                            <img src={currentUser.photoURL} style={{ borderRadius: '50%', backgroundColor: 'transparent' }} height={'30px'} width={'30px'} alt="🎈" />
+                            :
+                            <img src={item.photo} style={{ borderRadius: '50%', backgroundColor: 'transparent' }} height={'30px'} width={'30px'} alt="🎈" />
+                        // <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" className="bi bi-person-circle" viewBox="0 0 16 16">
+                        //     <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+                        //     <path fillRule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z" />
+                        // </svg>
                     }
                 </span>
                 <p className='message'>
                     {(item.content).trim()}
+                    <small className='user-info' >{item.first_name} &#x2022; {item.created_at}</small>
                 </p>
             </div >
         )
     }
 
-    function handleAddMessage(e) {
+    async function handleAddMessage(e) {
         e.preventDefault();
+
+        if (currentFileToUpload) return console.log("FILE NEEDS TO BE UPLOADED");
+
         const content = e.target.elements.content;
+
         try {
-            return createUserMessage(groupMessageRef, content.value);
+            if (content.value == '') return;
+
+            await createUserMessage(groupMessageRef, content.value);
         } catch (err) {
             console.log(err)
         } finally {
@@ -65,8 +81,29 @@ export default function ChatContent({ groupId }) {
         }
     }
 
-    function changeTextArea() {
-        return;
+    function changeTextArea(e) {
+        const messageInput = document.querySelector('.message-box');
+
+        const name = e.target.files[0].name;
+        const type = e.target.files[0].type;
+        let innerText = `Filename: ${name} \nType: `;
+
+        messageInput.setAttribute('disabled', true);
+
+        if (type == 'application/vnd.openxmlformats-officedocument.presentationml.presentation' || type == 'application/vnd.ms-powerpoint')
+            innerText += 'Presentation'
+        else if (type == 'image/png' || type == 'image/jpg' || type == 'image/jpeg')
+            innerText += 'Image'
+        else if (type == 'image/gif')
+            innerText += 'GIF'
+        else if (type == 'application/pdf')
+            innerText += 'PDF'
+        else
+            innerText += type
+
+        messageInput.innerHTML = innerText
+
+        setCurrentFileToUpload(e.target.files[0])
     }
 
     return (
@@ -77,6 +114,7 @@ export default function ChatContent({ groupId }) {
                         return setMessages(item)
                     })
                 }
+                <div id='dummy'></div>
             </div>
 
             <form className='input-message-container' onSubmit={handleAddMessage}>
@@ -85,9 +123,9 @@ export default function ChatContent({ groupId }) {
                         <path style={{ color: "rgb(130, 88, 206)" }} d="M10.5 8.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z" />
                         <path d="M2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4H2zm.5 2a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1zm9 2.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0z" />
                     </svg>
-                    <input type='file' accept="image/png, image/jpeg , application/pdf" onChange={changeTextArea} />
+                    <input type='file' accept="image/png, image/jpeg, image/gif , application/pdf, .pptx, .ppt" onChange={changeTextArea} />
                 </div>
-                <textarea className='message-box' name="content" placeholder='Type your message here...'></textarea>
+                <textarea className='message-box' name="content" placeholder='Type your message here...' disabled={false} autoFocus={true}></textarea>
                 {/* <a href="#" className='btn-emoji' >
                         <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" fill="currentColor" className="bi bi-emoji-smile" viewBox="0 0 16 16">
                             <path style={{ color: "rgb(130, 88, 206)" }} d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />

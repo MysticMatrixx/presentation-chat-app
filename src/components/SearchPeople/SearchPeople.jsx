@@ -7,7 +7,7 @@ import './SearchPeople.css'
 
 export default function SearchPeople({ listUsers, groupId }) {
     // const { Options } = components;
-    const { addUserToGroup } = useChat()
+    const { addUserToGroup, updateJoinedGroupInUser } = useChat()
 
     const [currentValue, setCurrentValue] = useState([]);
     const [isDisabled, setIsDisabled] = useState(false);
@@ -24,6 +24,7 @@ export default function SearchPeople({ listUsers, groupId }) {
             setIsDisabled(true)
             await addUserToGroup(groupId, e.value)
             setCurrentValue([])
+            await updateJoinedGroupInUser(groupId, e.value)
         } catch (err) {
             console.log(err);
         } finally {

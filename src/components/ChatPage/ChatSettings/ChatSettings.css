@@ -118,3 +118,111 @@
 
     cursor: pointer;
 }
+
+.delete-dialog-container {
+    border-radius: 17px;
+    padding: 0;
+    border: none;
+
+    width: 50%;
+}
+
+.delete-message {
+    padding-inline: 2rem;
+    padding-block: 0.75rem;
+
+
+    color: rgb(218, 33, 33);
+    background-color: rgba(255, 39, 39, 0.144);
+    overflow-wrap: break-word;
+}
+
+.delete-message p {
+    font-size: 1.2rem;
+}
+
+.delete-form {
+    padding-inline: 2rem;
+    padding-block: 3rem;
+    font-size: 1.2rem;
+}
+
+.delete-form p {
+    color: #6f6c7f;
+    font-weight: 400;
+}
+
+.delete-form p strong {
+    color: #000;
+}
+
+.delete-form input {
+    height: 2.5rem;
+    width: 50%;
+
+    border: 1px solid rgba(188, 188, 188, 0.728);
+    border-radius: 5px;
+
+    padding-left: 0.5rem;
+    font-size: 1rem;
+}
+
+.delete-form input::-webkit-input-placeholder {
+    color: #a4a0ba;
+}
+
+.delete-form input::-moz-placeholder {
+    color: #a4a0ba;
+}
+
+.delete-form input::-ms-placeholder {
+    color: #a4a0ba;
+}
+
+.delete-form input::placeholder {
+    color: #a4a0ba;
+}
+
+.btn-form button {
+    width: 5.5rem;
+    height: 2.5rem;
+
+    border-radius: 13px;
+    border: none;
+
+    font-size: medium;
+}
+
+.btn-form {
+    margin-top: 4.25rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: end;
+
+    gap: 0.25rem;
+}
+
+.btn-form .btn-1 {
+    background-color: inherit;
+}
+
+.btn-1:hover {
+    background-color: #e9e9ed;
+}
+
+.btn-form .btn-2:disabled {
+    color: #393744;
+    background-color: #e9e9ed;
+    pointer-events: none;
+}
+
+.btn-form .btn-2 {
+    color: #f0f0f0;
+    background-color: rgb(218, 33, 33);
+}
+
+.btn-form .btn-2:hover {
+    color: #f0f0f0;
+    background-color: rgb(187, 29, 29);
+}

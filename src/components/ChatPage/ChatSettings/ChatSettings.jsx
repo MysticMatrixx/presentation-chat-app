@@ -1,29 +1,77 @@
 import { useAuth } from '../../../context/AuthContext';
 import { useChat } from '../../../context/ChatContext';
 
-import { useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import SearchPeople from '../../SearchPeople/SearchPeople';
 import './ChatSettings.css'
 
 export default function ChatSettings({ groupId, groupInfo }) {
     const { currentUser } = useAuth();
-    const { allUsers } = useChat();
+    const { allUsers, deleteGroup } = useChat();
 
-    const isCurrentUserAdmin = (currentUser.uid === groupInfo.owner_id);
+    const groupName = groupInfo.group_name;
+    const [isDisable, setIsDisable] = useState(true);
+
+    const isCurrentUserAdmin = (currentUser.uid === groupInfo?.owner_id);
     let listUsers = [];
 
     useEffect(() => {
         listUsers = []
     }, [groupId])
 
-    function handleDeleteGroup() {
-        return;
+    async function handleDeleteGroup(e) {
+        e.preventDefault();
+        const groupName = e.target.elements.group_name;
+
+        try {
+            // console.log("GROUP DELETED")
+            await deleteGroup(groupId);
+            window.location.reload(false);
+        } catch (err) {
+            console.error("Can't Delete the group, Try Again later!");
+        } finally {
+            groupName.value = ''
+        }
     }
 
-    function handleExitGroup() {
-        return;
-    }
+    // function handleExitGroup() {
+    //     return;
+    // }
+
+    useEffect(() => {
+        const dataModal = document.querySelector('#delete-modal')
+        const openBtn = document.querySelector('#open-delete-modal')
+        const closeBtn = document.querySelector('#close-delete-modal')
+
+        function forOpenDelete() {
+            dataModal.showModal()
+        }
+        openBtn?.addEventListener('click', forOpenDelete)
+
+        function forCloseDelete() {
+            dataModal.close()
+        }
+        closeBtn?.addEventListener('click', forCloseDelete)
+
+        const forDeleteModal = (e) => {
+            const dialogDimensions = dataModal.getBoundingClientRect()
+            if (
+                e.clientX < dialogDimensions.left || e.clientX > dialogDimensions.right ||
+                e.clientY < dialogDimensions.top || e.clientY > dialogDimensions.bottom
+            ) {
+                dataModal.close()
+            }
+        }
+        dataModal?.addEventListener('click', forDeleteModal)
+
+        return () => {
+            closeBtn?.removeEventListener('click', forCloseDelete)
+            openBtn?.removeEventListener('click', forOpenDelete)
+            dataModal?.removeEventListener('click', forDeleteModal)
+        }
+    }, [])
+
 
     return (
         <>
@@ -74,9 +122,42 @@ export default function ChatSettings({ groupId, groupInfo }) {
                 <div className='group-option-container'>
                     <span className='group-option-title'>Options</span>
                     <ul className="group-option-list">
-                        {isCurrentUserAdmin ? <button onClick={handleDeleteGroup}><li>Delete Group</li></button>
-                            : <button onClick={handleExitGroup}><li>Leave Group</li></button>}
+                        {
+                            isCurrentUserAdmin ?
+                                <button id='open-delete-modal'><li>Delete Group</li></button>
+                                : ""
+                        }
+                        {/*<button onClick={handleExitGroup}><li>Leave Group</li></button>*/}
+
                     </ul>
+
+                    <dialog className='delete-dialog-container' id='delete-modal'>
+                        <div className='delete-message'>
+                            <h2> &#9888; Delete this group?</h2>
+                            <p>
+                                Doing so will permanently delete this group, including all its chat,
+                                <br />removing all its joined users, with a page reload.
+                            </p>
+                        </div>
+                        {/* {
+                                formError &&
+                                <p style={{ color: 'red' }}>{formError}</p>
+                            } */}
+                        <form className='delete-form' onSubmit={handleDeleteGroup}>
+                            <p>Confirm you want to delete this group by typing its name: <strong>{groupName}</strong></p>
+                            <input type="text" onChange={e => {
+                                if (e.target.value === groupName)
+                                    setIsDisable(false);
+                                else if (!isDisable)
+                                    setIsDisable(true);
+
+                            }} name='group_name' placeholder={groupName} />
+                            <span className='btn-form'>
+                                <button type="button" className='btn-1' formMethod="dialog" id='close-delete-modal'>Cancel</button>
+                                <button type='submit' className='btn-2' formMethod='dialog' disabled={isDisable}>Delete</button>
+                            </span>
+                        </form>
+                    </dialog>
                 </div>
             </div>
         </>

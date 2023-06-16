@@ -1,8 +1,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
 import {
-    orderBy, addDoc, arrayUnion, collection, doc,
-    onSnapshot, query, serverTimestamp, updateDoc, where
+    orderBy, addDoc, arrayUnion, arrayRemove, collection, doc,
+    onSnapshot, query, serverTimestamp, updateDoc, where, deleteDoc
 } from "firebase/firestore";
 
 import { db } from "../firebase";
@@ -15,7 +15,7 @@ export function useChat() {
 }
 
 export function ChatProvider({ children }) {
-    const { currentUser } = useAuth();
+    const { currentUser, userNameArr } = useAuth();
 
     const userColRef = collection(db, 'user')
     const messageGroupColRef = collection(db, 'group')
@@ -68,22 +68,32 @@ export function ChatProvider({ children }) {
         return addDoc(messageGroupColRef, data);
     }
 
-    // update joined_group array in user
-    function updateJoinedGroupInUser(group_id) {
-        return updateDoc(doc(userColRef, currentUser.uid), {
-            joined_groups: arrayUnion(group_id),
-        })
-    }
-
     // send message with current user
     function createUserMessage(docRef, content) {
+        const date = new Date();
         const data = {
             created_at: serverTimestamp(),
+            // created_at: date.toLocaleTimeString('hi-IN', { hour: '2-digit', minute: '2-digit' }),
             sender_id: currentUser.uid,
+            photo: currentUser.photoURL,
+            first_name: userNameArr[0],
             content,
         }
 
         return addDoc(docRef, data);
+    }
+
+    // FOR NOW : Delete only if Current user is the Group owner
+    function deleteGroup(groupId) {
+        const groupRef = doc(messageGroupColRef, groupId);
+        return deleteDoc(groupRef)
+    }
+
+    // update joined_group array in user
+    function updateJoinedGroupInUser(group_id, user_id = '') {
+        return updateDoc(doc(userColRef, user_id ? user_id : currentUser.uid), {
+            joined_groups: arrayUnion(group_id),
+        })
     }
 
     // add the user_id to group's participant field
@@ -97,7 +107,7 @@ export function ChatProvider({ children }) {
     const value = {
         messageGroupColRef, userColRef, currentUserGroups, allUsers,
         createGroup, createUserMessage, updateJoinedGroupInUser,
-        addUserToGroup,
+        addUserToGroup, deleteGroup,
     };
 
     return (
