@@ -8,4 +8,4 @@
 
 - Install the dependencies `npm install`
 - Start server with ( development environment ): `npm run dev`
-- Open [localhost_URL](localhost:5173/) in browser on which our server is running
+- Open [localhost](localhost:5173/) in browser on which our server is running
