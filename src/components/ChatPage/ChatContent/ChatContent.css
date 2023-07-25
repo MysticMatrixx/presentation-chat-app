@@ -90,6 +90,14 @@
     box-shadow: 0 -1px 3px rgba(114, 84, 169);
 }
 
+.btn-clear {
+    border: none;
+    background-color: transparent;
+
+    position: absolute;
+    right: calc(120px + 2.75rem);
+}
+
 .btn-camera,
 .btn-emoji {
     border-radius: 100vmax;
@@ -103,6 +111,7 @@
 
 .btn-camera,
 .btn-emoji,
+.btn-clear svg,
 .btn-send {
     cursor: pointer;
 }
@@ -170,12 +179,14 @@
 .btn-camera:focus-visible,
 .btn-camera:focus-within {
     background-color: rgb(116, 80, 182);
+    scale: 1.2;
 }
 
 .btn-send:hover,
 .btn-send:focus-visible {
     outline: 3px solid rgb(116, 80, 182);
     background-color: #fff;
+    scale: 1.02;
 }
 
 .user-info {
@@ -190,4 +201,15 @@
     padding-inline: 0.15rem;
 
     cursor: default;
+}
+
+.type-file {
+    padding-block: 0.5rem;
+    height: 10rem;
+}
+
+.type-file:focus-visible,
+.type-file:focus-within,
+.type-file:active {
+    outline: none;
 }

@@ -69,14 +69,15 @@ export function ChatProvider({ children }) {
     }
 
     // send message with current user
-    function createUserMessage(docRef, content) {
-        const date = new Date();
+    function createUserMessage(docRef, content, type) {
+        // const date = new Date();
         const data = {
             created_at: serverTimestamp(),
             // created_at: date.toLocaleTimeString('hi-IN', { hour: '2-digit', minute: '2-digit' }),
             sender_id: currentUser.uid,
             photo: currentUser.photoURL,
             first_name: userNameArr[0],
+            type,
             content,
         }
 
@@ -96,6 +97,19 @@ export function ChatProvider({ children }) {
         })
     }
 
+    // update joined_group array in user and participants in group
+    function leaveJoinedGroup(group_id, user_id) {
+        return (
+            updateDoc(doc(userColRef, user_id), {
+                joined_groups: arrayRemove(group_id),
+            }),
+
+            updateDoc(doc(messageGroupColRef, group_id), {
+                participants: arrayRemove(user_id),
+            })
+        )
+    }
+
     // add the user_id to group's participant field
     function addUserToGroup(groupId, userId) {
         const groupRef = doc(messageGroupColRef, groupId);
@@ -107,7 +121,7 @@ export function ChatProvider({ children }) {
     const value = {
         messageGroupColRef, userColRef, currentUserGroups, allUsers,
         createGroup, createUserMessage, updateJoinedGroupInUser,
-        addUserToGroup, deleteGroup,
+        addUserToGroup, deleteGroup, leaveJoinedGroup,
     };
 
     return (

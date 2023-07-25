@@ -77,7 +77,7 @@ export function ChatPage() {
                             </svg>
                         </button>
                         <ChatContent groupId={groupId} />
-                        <ChatSettings groupId={groupId} groupInfo={groupInfo} />
+                        {groupInfo && <ChatSettings groupId={groupId} groupInfo={groupInfo} />}
                     </>
                 ) : <h1 style={{ textAlign: 'center', width: '100%' }}>
                     Create Groups

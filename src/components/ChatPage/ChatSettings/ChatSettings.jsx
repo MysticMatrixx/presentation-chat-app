@@ -1,14 +1,14 @@
 import { useAuth } from '../../../context/AuthContext';
 import { useChat } from '../../../context/ChatContext';
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import SearchPeople from '../../SearchPeople/SearchPeople';
 import './ChatSettings.css'
 
 export default function ChatSettings({ groupId, groupInfo }) {
     const { currentUser } = useAuth();
-    const { allUsers, deleteGroup } = useChat();
+    const { allUsers, deleteGroup, leaveJoinedGroup } = useChat();
 
     const groupName = groupInfo.group_name;
     const [isDisable, setIsDisable] = useState(true);
@@ -35,9 +35,14 @@ export default function ChatSettings({ groupId, groupInfo }) {
         }
     }
 
-    // function handleExitGroup() {
-    //     return;
-    // }
+    async function handleExitGroup() {
+        try {
+            await leaveJoinedGroup(groupId, currentUser.uid)
+            window.location.reload(false);
+        } catch (err) {
+            console.error("Can't Leave the group, Try Again later!");
+        }
+    }
 
     useEffect(() => {
         const dataModal = document.querySelector('#delete-modal')
@@ -115,9 +120,12 @@ export default function ChatSettings({ groupId, groupInfo }) {
                         }
                     </ul>
                 </div>
-                <span className='people-find'>
-                    <SearchPeople listUsers={listUsers} groupId={groupId} />
-                </span>
+                {
+                    (isCurrentUserAdmin && listUsers.length != 0) &&
+                    <span className='people-find'>
+                        <SearchPeople listUsers={listUsers} groupId={groupId} />
+                    </span>
+                }
 
                 <div className='group-option-container'>
                     <span className='group-option-title'>Options</span>
@@ -125,9 +133,9 @@ export default function ChatSettings({ groupId, groupInfo }) {
                         {
                             isCurrentUserAdmin ?
                                 <button id='open-delete-modal'><li>Delete Group</li></button>
-                                : ""
+                                :
+                                <button onClick={handleExitGroup}><li>Leave Group</li></button>
                         }
-                        {/*<button onClick={handleExitGroup}><li>Leave Group</li></button>*/}
 
                     </ul>
 
